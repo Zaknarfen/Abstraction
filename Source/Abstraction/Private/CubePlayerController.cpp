@@ -1,8 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Controllers/Entities/Players/CubePlayerController.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "GameFramework/PlayerInput.h"
 #include "GameFramework/Pawn.h"
+
+ACubePlayerController::ACubePlayerController()
+{
+	bShowMouseCursor = true;
+	DefaultMouseCursor = EMouseCursor::Crosshairs;
+}
 
 void ACubePlayerController::SetupInputComponent()
 {
@@ -10,60 +17,54 @@ void ACubePlayerController::SetupInputComponent()
 
 	// Actions
 	InputComponent->BindAction("LeftClick", IE_Pressed, this, &ACubePlayerController::OnLeftClick);
-	InputComponent->BindAction("LeftClick", IE_MAX, this, &ACubePlayerController::OnLeftClick);
+	InputComponent->BindAction("LeftClick", IE_Released, this, &ACubePlayerController::OnLeftClickUp);
+}
 
-	// Axes
-	InputComponent->BindAxis("LookUp", this, &ACubePlayerController::OnAxisInputLookUp);
-	InputComponent->BindAxis("MoveRight", this, &ACubePlayerController::OnAxisInputMoveRight);
-	InputComponent->BindAxis("MoveForward", this, &ACubePlayerController::OnAxisInputMoveForward);
+void ACubePlayerController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
 
-	// So we can see the cursor and have mouse events
-	bShowMouseCursor = true; 
-	bEnableClickEvents = true; 
-	bEnableMouseOverEvents = true;
+	// keep updating the destination every tick while desired
+	if (bMoveToMouseCursor)
+	{
+		MovePlayer();
+	}
 }
 
 void ACubePlayerController::OnLeftClick()
 {
-	UE_LOG(LogTemp, Display, TEXT("Left Click"));
-	float mouseX;
-	float mouseY;
-	GetMousePosition(mouseX, mouseY);
+	bMoveToMouseCursor = true;
+}
 
-	UE_LOG(LogTemp, Display, TEXT("mouseX, %.2f"), mouseX);
-	UE_LOG(LogTemp, Display, TEXT("mouseY, %.2f"), mouseY);
+void ACubePlayerController::OnLeftClickUp()
+{
+	bMoveToMouseCursor = false;
+}
 
-	// Raycast to any static mesh
-	FHitResult HitOut = FHitResult(ForceInit);
-	GetHitResultUnderCursor(ECC_WorldStatic, true, HitOut);
+void ACubePlayerController::MovePlayer()
+{
+	// Trace to see what is under the mouse cursor
+	FHitResult Hit;
+	GetHitResultUnderCursor(ECC_Visibility, false, Hit);
 
-	UE_LOG(LogTemp, Display, TEXT("--------------------------------"));
-	UE_LOG(LogTemp, Display, TEXT("hit, %.2f, %.2f, %.2f"), HitOut.Location.X, HitOut.Location.Y, HitOut.Location.Z);
+	if (Hit.bBlockingHit)
+	{
+		UE_LOG(LogTemp, Display, TEXT("--------------------------------"));
+		UE_LOG(LogTemp, Display, TEXT("hit, %.2f, %.2f, %.2f"), Hit.ImpactPoint.X, Hit.ImpactPoint.Y, Hit.ImpactPoint.Z);
 	
-	APawn* CubePawn = GetPawn();
-	UE_LOG(LogTemp, Display, TEXT("--------------------------------"));
-	UE_LOG(LogTemp, Display, TEXT("pawn, %.2f, %.2f, %.2f"), CubePawn->GetActorLocation().X, CubePawn->GetActorLocation().Y, CubePawn->GetActorLocation().Z);
+		APawn* CubePawn = GetPawn();
+		if (CubePawn)
+		{
+			UE_LOG(LogTemp, Display, TEXT("--------------------------------"));
+			UE_LOG(LogTemp, Display, TEXT("pawn, %.2f, %.2f, %.2f"), CubePawn->GetActorLocation().X, CubePawn->GetActorLocation().Y, CubePawn->GetActorLocation().Z);
 
-	// Set new the location
-	CubePawn->SetActorLocation(HitOut.Location);
-}
+			float const Distance = FVector::Dist(Hit.ImpactPoint, CubePawn->GetActorLocation());
 
-void ACubePlayerController::OnAxisInputTurn(float value)
-{
-
-}
-
-void ACubePlayerController::OnAxisInputLookUp(float value)
-{
-
-}
-
-void ACubePlayerController::OnAxisInputMoveRight(float value)
-{
-
-}
-
-void ACubePlayerController::OnAxisInputMoveForward(float value)
-{
-
+			// We need to issue move command only if far enough in order for walk animation to play correctly
+			if ((Distance > 120.0f))
+			{
+				UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, Hit.ImpactPoint);
+			}
+		}
+	}
 }

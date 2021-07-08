@@ -15,26 +15,20 @@ class ABSTRACTION_API ACubePlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditAnywhere)
-	AActor* actor;
+	ACubePlayerController();
 
+protected:
 	// Overriding the default input setup
 	virtual void SetupInputComponent() override;
 	
-protected:
-	// Used by BindAction must use 0 parameters
-	UFUNCTION()
-	void OnLeftClick();
+	// Called every frame
+    virtual void PlayerTick(float DeltaTime) override;
 	
-	UFUNCTION()
-	void OnAxisInputTurn(float value);
+	uint32 bMoveToMouseCursor : 1;
+	
+	// Used by BindAction must use 0 parameters
+	void OnLeftClick();
+	void OnLeftClickUp();
 
-	UFUNCTION()
-	void OnAxisInputLookUp(float value);
-
-	UFUNCTION()
-	void OnAxisInputMoveRight(float value);
-
-	UFUNCTION()
-	void OnAxisInputMoveForward(float value);
+	void MovePlayer();
 };

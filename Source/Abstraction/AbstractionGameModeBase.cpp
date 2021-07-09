@@ -3,14 +3,14 @@
 
 #include "AbstractionGameModeBase.h"
 
-#include "Characters/Entities/Players/CubeCharacter.h"
-#include "Controllers/Entities/Players/CubePlayerController.h"
+#include "Characters/Entities/Players/PlayerCharacter.h"
+#include "Controllers/Entities/Players/DefaultPlayerController.h"
 
 AAbstractionGameModeBase::AAbstractionGameModeBase()
 {
 	// use our custom CubePlayerController as default controller
-	PlayerControllerClass = ACubePlayerController::StaticClass();
+	PlayerControllerClass = ADefaultPlayerController::StaticClass();
 
 	// Use our custom CubeCharacter as default pawn
-	DefaultPawnClass = ACubeCharacter::StaticClass();
+	DefaultPawnClass = APlayerCharacter::StaticClass();
 }

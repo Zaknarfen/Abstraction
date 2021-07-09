@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "CubePlayerController.generated.h"
+#include "DefaultPlayerController.generated.h"
 
 /**
  * 
  */
 UCLASS( ClassGroup=(CustomController), meta=(BlueprintSpawnableComponent) )
-class ABSTRACTION_API ACubePlayerController : public APlayerController
+class ABSTRACTION_API ADefaultPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
 public:
-	ACubePlayerController();
+	ADefaultPlayerController();
 
 protected:
 	// Overriding the default input setup

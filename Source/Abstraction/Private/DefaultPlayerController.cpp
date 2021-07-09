@@ -1,26 +1,26 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Controllers/Entities/Players/CubePlayerController.h"
+#include "Controllers/Entities/Players/DefaultPlayerController.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "GameFramework/PlayerInput.h"
 #include "GameFramework/Pawn.h"
 
-ACubePlayerController::ACubePlayerController()
+ADefaultPlayerController::ADefaultPlayerController()
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 }
 
-void ACubePlayerController::SetupInputComponent()
+void ADefaultPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
 	// Actions
-	InputComponent->BindAction("LeftClick", IE_Pressed, this, &ACubePlayerController::OnLeftClick);
-	InputComponent->BindAction("LeftClick", IE_Released, this, &ACubePlayerController::OnLeftClickUp);
+	InputComponent->BindAction("LeftClick", IE_Pressed, this, &ADefaultPlayerController::OnLeftClick);
+	InputComponent->BindAction("LeftClick", IE_Released, this, &ADefaultPlayerController::OnLeftClickUp);
 }
 
-void ACubePlayerController::PlayerTick(float DeltaTime)
+void ADefaultPlayerController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
@@ -31,17 +31,17 @@ void ACubePlayerController::PlayerTick(float DeltaTime)
 	}
 }
 
-void ACubePlayerController::OnLeftClick()
+void ADefaultPlayerController::OnLeftClick()
 {
 	bMoveToMouseCursor = true;
 }
 
-void ACubePlayerController::OnLeftClickUp()
+void ADefaultPlayerController::OnLeftClickUp()
 {
 	bMoveToMouseCursor = false;
 }
 
-void ACubePlayerController::MovePlayer()
+void ADefaultPlayerController::MovePlayer()
 {
 	// Trace to see what is under the mouse cursor
 	FHitResult Hit;

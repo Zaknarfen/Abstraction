@@ -3,22 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Controllers/Entities/Players/CubePlayerController.h"
 #include "GameFramework/Character.h"
-#include "CubeCharacter.generated.h"
+#include "PlayerCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class UStaticMeshComponent;
 
 UCLASS()
-class ABSTRACTION_API ACubeCharacter : public ACharacter
+class ABSTRACTION_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ACubeCharacter();
+	APlayerCharacter();
 
 	// Unreal specific component, accounted in the garbage
 	// collector
@@ -30,9 +29,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collider")
 	UCapsuleComponent* PlayerCapsuleComponent;
-
-protected:
-    // Called when the game starts
-	virtual void BeginPlay() override;
-
 };

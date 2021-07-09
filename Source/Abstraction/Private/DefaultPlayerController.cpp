@@ -8,6 +8,7 @@
 ADefaultPlayerController::ADefaultPlayerController()
 {
 	bShowMouseCursor = true;
+	bAttachToPawn = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
 }
 

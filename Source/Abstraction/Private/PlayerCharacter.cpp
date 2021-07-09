@@ -5,12 +5,10 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
-{
+{	
 	// Don't rotate character to camera direction
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -22,15 +20,17 @@ APlayerCharacter::APlayerCharacter()
 	GetCharacterMovement()->bConstrainToPlane = true;
 	GetCharacterMovement()->bSnapToPlaneAtStart = true;
 
-	// All the assignments are here so our components show up in the editor. The root component
-	// is the capsule collider, it can be seen you if you create a blueprint out of this class
-
 	// Holds the camera
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponent->SetupAttachment(RootComponent);
+	SpringArmComponent->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
+	SpringArmComponent->TargetArmLength = 800.f;
+	SpringArmComponent->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	SpringArmComponent->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(SpringArmComponent);
+	CameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	// Activate ticking in order to update the cursor every frame.
 	PrimaryActorTick.bCanEverTick = true;
